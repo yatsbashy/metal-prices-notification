@@ -9,6 +9,7 @@
   "dependencies": {},
   "scripts": {},
   "devDependencies": {
+    "aws-sdk": "^2.638.0",
     "prettier": "^1.19.1"
   }
 }
