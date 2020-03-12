@@ -1,9 +1,9 @@
 {
-  "name": "notify-weather-forecast",
+  "name": "metals-rates-notification",
   "version": "0.0.1",
-  "description": "Notify the weather forecast by the Japan Meteorological Agency.",
+  "description": "AWS SAM to notify metals rates.",
   "main": "app.js",
-  "repository": "https://github.com/yatsubashi/notify-weather-forecast",
+  "repository": "https://github.com/yatsubashi/metals-rates-notification",
   "author": "yatsubashi",
   "license": "MIT",
   "dependencies": {},
