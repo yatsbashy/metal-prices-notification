@@ -1,0 +1,16 @@
+printWidth: 100
+tabWidth: 4
+useTabs: true
+semi: false
+singleQuote: false
+bracketSpacing: true
+proseWrap: "preserve"
+trailingComma: es5
+overrides:
+  - files:
+      - "*.json"
+      - "*.yml"
+      - "*.yaml"
+    options:
+      tabWidth: 2
+      useTabs: false

@@ -1,0 +1,14 @@
+{
+  "name": "notify-weather-forecast",
+  "version": "0.0.1",
+  "description": "Notify the weather forecast by the Japan Meteorological Agency.",
+  "main": "app.js",
+  "repository": "https://github.com/yatsubashi/notify-weather-forecast",
+  "author": "yatsubashi",
+  "license": "MIT",
+  "dependencies": {},
+  "scripts": {},
+  "devDependencies": {
+    "prettier": "^1.19.1"
+  }
+}
