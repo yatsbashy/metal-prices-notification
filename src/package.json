@@ -6,7 +6,9 @@
   "repository": "https://github.com/yatsubashi/metals-rates-notification",
   "author": "yatsubashi",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
   "scripts": {},
   "devDependencies": {
     "aws-sdk": "^2.638.0",
