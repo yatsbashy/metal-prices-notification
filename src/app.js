@@ -1,33 +1,19 @@
-// const axios = require('axios')
-// const url = 'http://checkip.amazonaws.com/';
-let response;
+const AWS = require("aws-sdk")
 
-/**
- *
- * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
- * @param {Object} event - API Gateway Lambda Proxy Input Format
- *
- * Context doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html 
- * @param {Object} context
- *
- * Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
- * @returns {Object} object - API Gateway Lambda Proxy Output Format
- * 
- */
+const region = "ap-northeast-1"
+const secretsManager = new AWS.SecretsManager({ region: region })
+
+const secretName = "metals-api"
+
 exports.lambdaHandler = async (event, context) => {
-    try {
-        // const ret = await axios(url);
-        response = {
-            'statusCode': 200,
-            'body': JSON.stringify({
-                message: 'hello world',
-                // location: ret.data.trim()
-            })
-        }
-    } catch (err) {
-        console.log(err);
-        return err;
-    }
+	try {
+		const secretValue = await secretsManager.getSecretValue({ SecretId: secretName }).promise()
+		const { accessKey } = JSON.parse(secretValue.SecretString)
 
-    return response
-};
+		console.log(accessKey)
+		return accessKey
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
