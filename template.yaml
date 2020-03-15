@@ -1,39 +1,49 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  notify-weather-forecast
-
-  Sample SAM Template for notify-weather-forecast
-  
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-Globals:
-  Function:
-    Timeout: 3
+  AWS SAM Template for Metal Prices Notification
 
 Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  PublishMetalPricesFunction:
+    Type: AWS::Serverless::Function
     Properties:
+      FunctionName: "PublishMetalPricesFunction"
+      Description: "貴金属の価格情報を発行する。"
+      Timeout: 10
+      MemorySize: 128
       CodeUri: src/
       Handler: app.lambdaHandler
       Runtime: nodejs12.x
-      Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /hello
-            Method: get
-
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+      #   Events:
+      #     PublishingSchedule:
+      #       Type: Schedule
+      #       Properties:
+      #         Schedule: "cron(0 22 ? * SAN-THU *)" # JST 月-金 7:00
+      Role: !GetAtt PublishMetalPricesFunctionRole.Arn
+  PublishMetalPricesFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "PublishMetalPricesFunctionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AWSLambdaExecute"
+      Policies:
+        - PolicyName: PublishMetalPricesPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                Resource: "arn:aws:secretsmanager:ap-northeast-1:949921099367:secret:metals-api-ZMeuUj"
+  PublishMetalPricesFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${PublishMetalPricesFunction}
+      RetentionInDays: 30
