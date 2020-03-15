@@ -8,17 +8,24 @@ const secretName = "metals-api"
 
 const endpoint = "https://metals-api.com/api/latest"
 const baseCurrency = "JPY"
-const symbols = "XAU"
+const symbols = new Map([
+	["XAU", "金"],
+	["XAG", "銀"],
+	["XPT", "プラチナ"],
+])
+const joinedSymbols = Array.from(symbols.keys()).join(",")
 
 exports.lambdaHandler = async (event, context) => {
 	try {
 		const secretValue = await secretsManager.getSecretValue({ SecretId: secretName }).promise()
 		const { accessKey } = JSON.parse(secretValue.SecretString)
 
-		const url = `${endpoint}?access_key=${accessKey}&base=${baseCurrency}&symbols=${symbols}`
-		const result = await axios.get(url)
+		const result = await axios.get(
+			`${endpoint}?access_key=${accessKey}&base=${baseCurrency}&symbols=${joinedSymbols}`
+		)
 
 		console.log(result)
+		return result.data
 	} catch (err) {
 		console.log(err)
 		return err
